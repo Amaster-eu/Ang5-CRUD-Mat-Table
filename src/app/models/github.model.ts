@@ -5,23 +5,25 @@ export interface GithubModelFake {
 
 export class GithubModel {
   id: number;
-  title: string;
-  user: {
-    login: string;
+  name: string;
+  owner: {
     avatar_url?: string;
-    html_url: string;
   };
+  html_url: string;
+  description: string;
+  language: string;
   created_at: string;
 
   constructor(params: any) {
     const model = params || {};
     this.id = model.id || 0;
-    this.title = model.login || '';
-    this.user = model.user || {
-      login: '',
-      avatar_url: 'https://s18.postimg.org/8e6cashe1/no-image.jpg',
-      html_url: ''
+    this.name = model.login || '';
+    this.owner = model.user || {
+      avatar_url: 'https://s18.postimg.org/8e6cashe1/no-image.jpg'
     };
+    this.html_url = model.html_url || '';
+    this.description = model.description || '';
+    this.language = model.state || '';
     this.created_at = model.created_at || '';
   }
 }

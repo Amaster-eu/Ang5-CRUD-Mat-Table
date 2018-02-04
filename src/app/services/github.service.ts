@@ -14,10 +14,12 @@ export class GithubService {
   public ITEMS_URL = '';
 
   // Get/Set Methods
+  // https://stackoverflow.com/questions/12827266/get-and-set-in-typescript
   private _paginate: number;
   public get paginate(): number {
     return this._paginate;
   }
+
   public set paginate(value: number) {
     this._paginate = value;
   }
@@ -26,29 +28,29 @@ export class GithubService {
   }
 
   // Server Fake -- GitHub API service
-  // start server ===========================
-  // public getItems(sort: string, order: string, page: number, limit: number): Observable<any> {
-  //   this.API_URL = 'https://api.github.com/search/issues';
+  // start server =========================== also see home.component.ts:94
+  // public getItems(filter: string, sort: string, order: string, page: number, limit: number): Observable<any> {
+  //   this.API_URL = 'https://api.github.com/search/repositories';
   //   this.ITEMS_URL = '';
   //   // {
-  //   // "total_count": 9747,
+  //   // "total_count": 1000,
   //   //   "incomplete_results": false,
   //   //   "items": [
   //   //      {
   //   //        "id": 1,
   //   //        ...
   //   const params: string = [
-  //     `q=repo:angular/material2`,
-  //     `sort=` + '',
-  //     `order=` + '',
+  //     `q=repo:+language:` + filter,
+  //     `sort=` + sort,
+  //     `order=` + order,
   //     `page=` + (page + 1),
   //     `per_page=` + limit
   //   ].join('&');
 
-  // Server Real -- Localhost DB: ./src/assets/db/github.json
-  // start server ===========================
-  public getItems(sort: string, order: string, page: number, limit: number): Observable<GithubModel[]> {
-    this.API_URL = 'http://localhost:3000';
+    // Server Real -- Localhost DB: ./src/assets/db/github.json
+    // start server ===========================
+    public getItems(filter: string, sort: string, order: string, page: number, limit: number): Observable<GithubModel[]> {
+      this.API_URL = 'http://localhost:3000';
     this.ITEMS_URL = '/items';
     // {
     //   "items": [
@@ -82,7 +84,7 @@ export class GithubService {
     return this.http.post(`${this.API_URL}${this.ITEMS_URL}`, item);
   }
 
- public editItem(item: GithubModel): Observable<any> {
+  public editItem(item: GithubModel): Observable<any> {
     return this.http.post(`${this.API_URL}${this.ITEMS_URL}`, item);
   }
 

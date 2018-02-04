@@ -23,7 +23,7 @@ import { DialogDeleteComponent } from './dialog.delete.component';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   // Mat-Table
-  displayedColumns = ['id', 'title', 'user.login', 'user.url', 'created_at', 'actions'];
+  displayedColumns = ['id', 'name', 'description', 'html_url', 'language', 'actions'];
   dataSource = new MatTableDataSource();
   data: Object;
   // State Mat-Table
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // Modal: Delete
   deleteId = 0;
   /* Select: Filter 2 */
-  selectedValue: string;
+  selectedValue = '';
   selects = [
     {viewValue: 'None'},
     {value: 'html', viewValue: 'HTML'},
@@ -69,6 +69,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
     setTimeout(() => {
       this.getData();
       this.paginator.pageIndex = this.githubService.paginate; // calls the getter
@@ -83,7 +84,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
         switchMap(() => {
           this.isLoading = true;
           return this.githubService.getItems(
-            this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize
+            this.selectedValue,
+            this.sort.active,
+            this.sort.direction,
+            this.paginator.pageIndex,
+            this.paginator.pageSize
           );
         }),
         map(resp => {
@@ -120,7 +125,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   handleAdd() {
     this.router.navigate(['/add']);
     // Move to last pagination page
-    this.githubService.paginate =  Math.ceil(this.paginator.length / this.paginator.pageSize); // calls the setter
+    this.githubService.paginate = Math.ceil(this.paginator.length / this.paginator.pageSize); // calls the setter
   }
 
   handleEdit(id: number) {

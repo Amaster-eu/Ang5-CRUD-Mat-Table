@@ -32,31 +32,36 @@
 
 <!-- Mat Table -->
 <mat-table #table [dataSource]="dataSource" class="table"
-           matSort matSortActive="created_at" matSortDisableClear matSortDirection="asc">
+           matSort matSortActive="name" matSortDisableClear matSortDirection="asc">
   <!-- Id -->
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
     <mat-cell *matCellDef="let item">{{item?.id}}</mat-cell>
   </ng-container>
   <!-- Title -->
-  <ng-container matColumnDef="title">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{item?.title}}</mat-cell>
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.name}}</mat-cell>
   </ng-container>
   <!-- Login -->
-  <ng-container matColumnDef="user.login">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Login</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{item?.user.login}}</mat-cell>
+  <ng-container matColumnDef="description">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.description}}</mat-cell>
   </ng-container>
   <!-- Url -->
-  <ng-container matColumnDef="user.url">
+  <ng-container matColumnDef="html_url">
     <mat-header-cell *matHeaderCellDef mat-sort-header>Url</mat-header-cell>
-    <mat-cell *matCellDef="let item"><a href="{{item?.user.html_url}}" target="_blank">{{item?.user.html_url}}</a></mat-cell>
+    <mat-cell *matCellDef="let item"><a href="{{item?.html_url}}" target="_blank">{{item?.html_url}}</a></mat-cell>
   </ng-container>
   <!-- Created -->
-  <ng-container matColumnDef="created_at">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Created at</mat-header-cell>
-    <mat-cell *matCellDef="let item">{{item?.created_at | date}}</mat-cell>
+  <!--<ng-container matColumnDef="created_at">-->
+    <!--<mat-header-cell *matHeaderCellDef mat-sort-header>Created at</mat-header-cell>-->
+    <!--<mat-cell *matCellDef="let item">{{item?.created_at | date}}</mat-cell>-->
+  <!--</ng-container>-->
+  <!-- State -->
+  <ng-container matColumnDef="language">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Language</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.language}}</mat-cell>
   </ng-container>
   <!-- Actions -->
   <ng-container matColumnDef="actions">
