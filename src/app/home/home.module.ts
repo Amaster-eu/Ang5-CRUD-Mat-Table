@@ -13,7 +13,9 @@ import {
   MatSortModule,
   MatTableModule,
   MatToolbarModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatGridListModule,
 } from '@angular/material';
 
 import { HomeComponent } from './home.component';
@@ -42,6 +44,8 @@ import { DialogDeleteComponent } from './dialog.delete.component';
     MatToolbarModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
+    MatGridListModule,
   ]
 })
 export class HomeModule {

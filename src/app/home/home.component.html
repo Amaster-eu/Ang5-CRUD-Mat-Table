@@ -1,9 +1,26 @@
-<!-- Filter v1 -->
-<div class="form">
-  <mat-form-field floatPlaceholder="never" color="accent">
-    <input matInput #filter placeholder="Filter v1">
-  </mat-form-field>
-</div>
+<mat-grid-list cols="2" rowHeight="70px">
+  <mat-grid-tile>
+    <!-- Filter 1 -->
+    <div class="form">
+      <mat-form-field>
+        <!--<input matInput #filter placeholder="Filter 1">-->
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter 1">
+      </mat-form-field>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <!-- Filter 2 -->
+    <div class="button-row">
+      <mat-form-field>
+        <mat-select placeholder="Filter 2" [(ngModel)]="selectedValue" name="select" (change)="filter()">
+          <mat-option *ngFor="let select of selects" [value]="select.value">
+            {{ select.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
 
 <!-- PreLoader -->
 <div class="loading-shade" *ngIf="isLoading">

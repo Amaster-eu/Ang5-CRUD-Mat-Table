@@ -13,6 +13,15 @@ export class GithubService {
   public API_URL = '';
   public ITEMS_URL = '';
 
+  // Get/Set Methods
+  private _paginate: number;
+  public get paginate(): number {
+    return this._paginate;
+  }
+  public set paginate(value: number) {
+    this._paginate = value;
+  }
+
   constructor(private http: HttpClient) {
   }
 

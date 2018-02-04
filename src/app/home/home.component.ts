@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { merge } from 'rxjs/observable/merge';
 import { startWith } from 'rxjs/operators/startWith';
@@ -12,8 +12,6 @@ import {
   MatSort,
   MatTableDataSource,
   MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
 } from '@angular/material';
 
 import { GithubService } from '../services/github.service';
@@ -23,7 +21,7 @@ import { DialogDeleteComponent } from './dialog.delete.component';
   styleUrls: ['./home.component.scss'],
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   // Mat-Table
   displayedColumns = ['id', 'title', 'user.login', 'user.url', 'created_at', 'actions'];
   dataSource = new MatTableDataSource();
@@ -33,10 +31,21 @@ export class HomeComponent implements OnInit {
   isRateLimit = false;
   resultsLength = 0;
   // Modal: Delete
-  showDeleteModal = false;
   deleteId = 0;
+  /* Select: Filter 2 */
+  selectedValue: string;
+  selects = [
+    {viewValue: 'None'},
+    {value: 'html', viewValue: 'HTML'},
+    {value: 'javascript', viewValue: 'JavaScript'},
+    {value: 'css', viewValue: 'CSS'}
+  ];
 
-  editMode = true;
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -46,13 +55,27 @@ export class HomeComponent implements OnInit {
               public dialog: MatDialog) {
   }
 
+  filter() {
+    this.getData();
+  }
+
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     if (!this.paginator.pageSize) {
       this.paginator.pageSize = 5;
     }
+    this.getData();
+  }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.getData();
+      this.paginator.pageIndex = this.githubService.paginate; // calls the getter
+    }, 50);
+  }
+
+  getData() {
     // TODO: Get Items
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
@@ -64,10 +87,10 @@ export class HomeComponent implements OnInit {
           );
         }),
         map(resp => {
-          // Pagination on Side Client: Table
+          // Pagination Client-Side: Table
           this.dataSource.paginator = this.paginator;
 
-          // Pagination on Side Server
+          // Pagination Server-Side
           // this.resultsLength = resp.total_count;
 
           // Flip flag to show that loading has finished.
@@ -90,92 +113,28 @@ export class HomeComponent implements OnInit {
 
   handleView(id: number) {
     this.router.navigate(['/view', id]);
+    // Move to current pagination page
+    this.githubService.paginate = this.paginator.pageIndex; // calls the setter
   }
 
   handleAdd() {
-    // const mode = new Mode();
-    // mode.editMode = false;   // works set-method
-    // this.editMode = false;
-
     this.router.navigate(['/add']);
+    // Move to last pagination page
+    this.githubService.paginate =  Math.ceil(this.paginator.length / this.paginator.pageSize); // calls the setter
   }
 
-
   handleEdit(id: number) {
-    // const mode = new Mode();
-    // mode.editMode = true;   // works set-method
-    // console.log(mode.editMode);  // works get-method
-    // this.editMode = true;
-
     this.router.navigate(['/edit', id]);
+    // Move to current pagination page
+    // this.githubService.paginate = this.paginator.pageIndex; // calls the setter
   }
 
   handleDelete(id: number): void {
-    // this.showDeleteModal = true;
     this.deleteId = id;
     const dialogRef = this.dialog.open(DialogDeleteComponent, {
       data: {deleteId: id}
     });
-  }
-
-
-//
-
-//
-// reset() {
-//   this.loading = true;
-//   this.currentPageSize = Number.parseInt(this.options.pageSize);
-//   if (this.currentPageSize === 0) {
-//     this.currentPageSize = this.totalRecords;
-//   }
-//
-//   if (!this.options.server) {
-//     this.optionsLatency = 0;
-//   } else {
-//     this.optionsLatency = Number.parseInt(this.options.latency);
-//     this.items = [];
-//   }
-//
-//   // Timeout hack to make sure we completely reset the DataGrid
-//   setTimeout(() => {
-//     // this.getAllItems(1, this.currentPageSize);
-//     this.getAllItems();
-//     this.paginate(this.currentPage);
-//     this.loading = false;
-//   }, this.optionsLatency);
-// }
-//
-// handleConfirmDelete() {
-//
-// }
-//
-// handleCancelDelete() {
-//
-// }
-}
-
-// Get/Set Methods
-class Mode {
-  private _editMode?: boolean;
-
-  public get editMode(): boolean {
-    return this._editMode;
-  }
-
-  public set editMode(value: boolean) {
-    this._editMode = value;
+    // Move to current pagination page
+    this.githubService.paginate = this.paginator.pageIndex; // calls the setter
   }
 }
-
-
-// public set editMode(value: boolean) {
-//   this._editMode = value;
-// }
-// set editMode(value) {
-//   this._editMode = false;
-// }
-
-// get editMode() {
-//   return this._editMode;
-// }
-
