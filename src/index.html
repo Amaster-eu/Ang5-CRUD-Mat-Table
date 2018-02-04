@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Ang5 CRUD Mat-Table Http</title>
+    <base href="/">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+<app-root>
+    <style>
+        app-root {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        body {
+            background: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .spinner {
+            display: block;
+            position: relative;
+            width: 100px;
+            height: 100px;
+            animation: spinner-linear-rotate 2s linear infinite;
+        }
+
+        .spinner svg {
+            position: absolute;
+            transform: rotate(-90deg);
+            top: 0;
+            left: 0;
+            transform-origin: center;
+            overflow: visible
+        }
+
+        .spinner circle {
+            stroke: #3f51b5;
+            fill: transparent;
+            transform-origin: center;
+            transition: stroke-dashoffset 225ms linear;
+            transition-property: stroke;
+            animation-duration: 4s;
+            animation-timing-function: cubic-bezier(.35, 0, .25, 1);
+            animation-iteration-count: infinite;
+            animation-name: spinner-stroke-rotate-100;
+            stroke-dasharray: 282.743px;
+            stroke-width: 10%;
+        }
+
+        @keyframes spinner-linear-rotate {
+            0% {
+                transform: rotate(0deg)
+            }
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes spinner-stroke-rotate-100 {
+            0% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotate(0)
+            }
+            12.5% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotate(0)
+            }
+            12.51% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotateX(180deg) rotate(72.5deg)
+            }
+            25% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotateX(180deg) rotate(72.5deg)
+            }
+            25.1% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotate(270deg)
+            }
+            37.5% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotate(270deg)
+            }
+            37.51% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotateX(180deg) rotate(161.5deg)
+            }
+            50% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotateX(180deg) rotate(161.5deg)
+            }
+            50.01% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotate(180deg)
+            }
+            62.5% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotate(180deg)
+            }
+            62.51% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotateX(180deg) rotate(251.5deg)
+            }
+            75% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotateX(180deg) rotate(251.5deg)
+            }
+            75.01% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotate(90deg)
+            }
+            87.5% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotate(90deg)
+            }
+            87.51% {
+                stroke-dashoffset: 56.5486677px;
+                transform: rotateX(180deg) rotate(341.5deg)
+            }
+            100% {
+                stroke-dashoffset: 268.606171575px;
+                transform: rotateX(180deg) rotate(341.5deg)
+            }
+        }
+    </style>
+    <div class="spinner">
+        <svg viewBox="0 0 100 100">
+            <circle cx="50%" cy="50%" r="45"></circle>
+        </svg>
+    </div>
+</app-root>
+</body>
+</html>

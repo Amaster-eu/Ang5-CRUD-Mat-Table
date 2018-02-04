@@ -1,0 +1,53 @@
+<div class="container">
+  <h3 mat-dialog-title *ngIf="!editStatus">Add New Item</h3>
+  <h3 mat-dialog-title *ngIf="editStatus">Edit Item with id: {{item.id}}</h3>
+
+  <form class="mat-dialog-content" (ngSubmit)="submit" #formControl="ngForm">
+
+    <!--Textarea for demo purposes-->
+    <div class="form">
+      <mat-form-field color="accent">
+        <textarea matInput #input class="form-control" placeholder="Title" [(ngModel)]="item.title" name="title"
+                  required></textarea>
+        <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <!--Contains mat-hint for characters count and has maxLengt set-->
+      <mat-form-field color="accent">
+        <input matInput #inputstate class="form-control" placeholder="Login" [(ngModel)]="item.user.login" name="login" minlength="5"
+               required>
+        <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+        <mat-hint align="end">{{inputstate.value?.length || 0}}/5</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field color="accent">
+        <input matInput #input class="form-control" placeholder="User url" [(ngModel)]="item.user.html_url" name="url">
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field color="accent">
+        <input matInput #input class="form-control" placeholder="Avatar url" [(ngModel)]="item.user.avatar_url"
+               name="avatar.url">
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field color="accent">
+        <input matInput="date" #input type="datetime" class="form-control" placeholder="Date Created at" [(ngModel)]="item.created_at"
+               name="created_at">
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+      <button mat-raised-button color="accent" [type]="submit" [disabled]="!formControl.valid"
+              (click)="handleSubmit()">Save
+      </button>
+      <button mat-raised-button (click)="handleCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

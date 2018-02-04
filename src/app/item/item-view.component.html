@@ -1,0 +1,48 @@
+<!--<div class="row">-->
+<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+<!--<div class="card" *ngIf="item">-->
+<!--<div class="card-header">-->
+<!--View Item-->
+<!--</div>-->
+<!--<div class="card-block">-->
+<!--<div class="card-media-block">-->
+<!--<img src="{{ item?.avatar_url }}" class="card-media-image">-->
+<!--<div class="card-media-description">-->
+<!--<span class="card-media-title">Owner: <strong>{{ item?.login }}</strong></span>-->
+<!--<span class="card-media-text">id: <strong>{{ item?.id }}</strong></span>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="card-text">-->
+<!--<p>GitHub url: <a href="{{ item?.html_url }}">{{ item?.html_url }}</a></p>-->
+<!--<p>Site admin status: <strong>{{ item?.site_admin }}</strong></p>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="card-footer">-->
+<!--<button class="btn btn-icon btn-primary" (click)="handleCancel()">-->
+<!--<clr-icon shape="home"></clr-icon>-->
+<!--Back-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<mat-card>
+  <mat-card-header>
+    <div class="mat-card-avatar" mat-card-avatar="">
+      <img src="{{ item?.user.avatar_url }}" alt="Avatar">
+    </div>
+    <mat-card-title>Login: <strong>{{ item?.user.login }}</strong></mat-card-title>
+    <mat-card-subtitle>id: <strong>{{ item?.id }}</strong></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p><strong>Title:</strong> {{ item?.title }}</p>
+    <p><strong>Url:</strong> <a href="{{item?.user.html_url}}" target="_blank">{{item?.user.html_url}}</a></p>
+    <p><strong>Created:</strong> {{item?.created_at}}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="handleCancel()">
+      <mat-icon aria-label="Home">home</mat-icon>
+      Back
+    </button>
+  </mat-card-actions>
+</mat-card>

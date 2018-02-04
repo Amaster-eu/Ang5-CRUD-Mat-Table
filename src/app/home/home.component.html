@@ -1,0 +1,232 @@
+<!-- Filter v1 -->
+<div class="form">
+  <mat-form-field floatPlaceholder="never" color="accent">
+    <input matInput #filter placeholder="Filter v1">
+  </mat-form-field>
+</div>
+
+<!-- PreLoader -->
+<div class="loading-shade" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
+  <div class="rate-limit-reached" *ngIf="isRateLimit">
+    GitHub's API rate limit has been reached. It will be reset in one minute.
+  </div>
+</div>
+
+<!-- Mat Table -->
+<mat-table #table [dataSource]="dataSource" class="table"
+           matSort matSortActive="created_at" matSortDisableClear matSortDirection="asc">
+  <!-- Id -->
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.id}}</mat-cell>
+  </ng-container>
+  <!-- Title -->
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.title}}</mat-cell>
+  </ng-container>
+  <!-- Login -->
+  <ng-container matColumnDef="user.login">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Login</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.user.login}}</mat-cell>
+  </ng-container>
+  <!-- Url -->
+  <ng-container matColumnDef="user.url">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Url</mat-header-cell>
+    <mat-cell *matCellDef="let item"><a href="{{item?.user.html_url}}" target="_blank">{{item?.user.html_url}}</a></mat-cell>
+  </ng-container>
+  <!-- Created -->
+  <ng-container matColumnDef="created_at">
+    <mat-header-cell *matHeaderCellDef mat-sort-header>Created at</mat-header-cell>
+    <mat-cell *matCellDef="let item">{{item?.created_at | date}}</mat-cell>
+  </ng-container>
+  <!-- Actions -->
+  <ng-container matColumnDef="actions">
+    <!-- Add -->
+    <mat-header-cell *matHeaderCellDef>
+      <button mat-icon-button color="accent" (click)="handleAdd()">
+        <mat-icon aria-label="Add">add_circle_outline</mat-icon>
+      </button>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let item; let i=index;">
+      <!-- View -->
+      <button mat-icon-button (click)="handleView(item?.id)">
+        <mat-icon aria-label="View">visibility</mat-icon>
+      </button>
+      <!-- Edit -->
+      <button mat-icon-button color="primary" (click)="handleEdit(item?.id)">
+        <mat-icon aria-label="Edit">edit</mat-icon>
+      </button>
+      <!-- Delete -->
+      <button mat-icon-button color="accent" (click)="handleDelete(item?.id)">
+        <mat-icon aria-label="Delete">delete</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+  <!-- Created Column -->
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let item; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<mat-paginator #paginator
+               [length]="resultsLength"
+               [pageSize]="5"
+               [pageSizeOptions]="[5, 10, 20]">
+</mat-paginator>
+
+
+<!-- Modal: Delete -->
+<ng-template let-data let-dialogRef="dialog-delete-item">
+  <!--<div class="container" [mat-dialog-open]="showDeleteModal">-->
+    <h3 mat-dialog-title>Delete Item</h3>
+
+    <div mat-dialog-content>
+      <p>Delete the item with <strong>id: {{deleteId}}</strong>.</p>
+      <h3>Are you sure?</h3>
+    </div>
+
+    <div mat-dialog-actions>
+      <button mat-raised-button color="primary"
+              [mat-dialog-close]="1"
+              (click)="deleteItem(deleteId)">
+        Delete
+      </button>
+      <button mat-raised-button mat-dialog-close>Cancel</button>
+    </div>
+  <!--</div> -->
+  <!--<button type="button" (click)="dialogRef.close(lastCloseResult = howMuch.value)">Close dialog</button>-->
+  <!--<button (click)="dialogRef.updateSize('500px', '500px').updatePosition({ top: '25px', left: '25px' });">Change dimensions</button>`-->
+</ng-template>
+
+<!--<clr-modal [clrModalOpen]="showDeleteModal">-->
+  <!--<h3 class="modal-title">Delete Item</h3>-->
+  <!--<div class="modal-body">-->
+    <!--<p>Delete the item <strong>id: {{deleteId}}</strong>. Are you sure?</p>-->
+  <!--</div>-->
+  <!--<div class="modal-footer">-->
+    <!--<button type="button" class="btn btn-outline" (click)="showDeleteModal = false">Cancel</button>-->
+    <!--<button type="button" class="btn btn-warning" (click)="itemDelete(deleteId)">Delete</button>-->
+  <!--</div>-->
+<!--</clr-modal>-->
+
+
+
+
+
+
+<!--<div class="button-row">-->
+<!--<button mat-raised-button color="primary" (click)="dialogView()">-->
+<!--<mat-icon aria-label="View">visibility</mat-icon>-->
+<!--View-->
+<!--</button>-->
+<!--<button mat-raised-button color="primary" (click)="dialogAdd()">-->
+<!--<mat-icon aria-label="Add">add</mat-icon>-->
+<!--Add-->
+<!--</button>-->
+<!--<button mat-raised-button color="primary" (click)="dialogEdit()">-->
+<!--<mat-icon aria-label="Edit">edit</mat-icon>-->
+<!--Edit-->
+<!--</button>-->
+<!--<button mat-raised-button color="primary" (click)="dialogDelete()">-->
+<!--<mat-icon aria-label="Delete">delete</mat-icon>-->
+<!--Delete-->
+<!--</button>-->
+<!--</div>-->
+
+
+<!-- DataGrid -->
+<!--<clr-datagrid [clrDgLoading]="loading">-->
+<!--<clr-dg-column [clrDgSortBy]="'id'">ID</clr-dg-column>-->
+<!--<clr-dg-column [clrDgField]="'login'">Name</clr-dg-column>-->
+<!--<clr-dg-column>Description</clr-dg-column>-->
+<!--<clr-dg-column [clrDgField]="'site_admin'">-->
+<!--Site Admin-->
+<!--<clr-dg-filter [clrDgFilter]="customFilter">-->
+<!--<custom-filter #customFilter class="custom-filter"></custom-filter>-->
+<!--</clr-dg-filter>-->
+<!--</clr-dg-column>-->
+<!--<clr-dg-column>Actions</clr-dg-column>-->
+
+<!--<clr-dg-placeholder>No items found</clr-dg-placeholder>-->
+
+<!--<clr-dg-row *clrDgItems="let item of items" [clrDgItem]="item">-->
+<!--<clr-dg-cell>{{item?.id}}</clr-dg-cell>-->
+<!--<clr-dg-cell>{{item?.login}}</clr-dg-cell>-->
+<!--<clr-dg-cell><a href="{{item?.html_url}}" target="_blank">{{item?.html_url}}</a></clr-dg-cell>-->
+<!--<clr-dg-cell>{{item?.site_admin}}</clr-dg-cell>-->
+<!--<clr-dg-cell>-->
+<!--<button type="button" class="btn btn-icon btn-success" (click)="handleView(-->
+<!--item.id, item.login, item.html_url, item.site_admin)">-->
+<!--<clr-icon shape="eye"></clr-icon>-->
+<!--</button>-->
+<!--<button type="button" class="btn btn-icon btn-primary" (click)="handleEdit(-->
+<!--item.id, item.login, item.html_url, item.site_admin)">-->
+<!--<clr-icon shape="pencil"></clr-icon>-->
+<!--</button>-->
+<!--<button type="button" class="btn btn-icon btn-warning"-->
+<!--(click)="handleDelete(item?.id);">-->
+<!--<clr-icon shape="trash"></clr-icon>-->
+<!--</button>-->
+<!--</clr-dg-cell>-->
+<!--</clr-dg-row>-->
+
+<!--<clr-dg-footer>-->
+<!--<clr-dg-pagination #pagination-->
+<!--[clrDgPageSize]="currentPageSize"-->
+<!--(clrDgPageChange)="paginate($event)"-->
+<!--[(clrDgPage)]="currentPage">-->
+<!--{{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}-->
+<!--of {{pagination.totalItems}} items-->
+<!--</clr-dg-pagination>-->
+<!--</clr-dg-footer>-->
+<!--</clr-datagrid>-->
+
+
+<!--&lt;!&ndash; Options &ndash;&gt;-->
+<!--<form (submit)="$event.preventDefault(); reset()" ngNoForm>-->
+<!--<div class="form-group">-->
+<!--<label for="page-size">Rows per page</label>-->
+<!--<div class="select">-->
+<!--<select id="page-size" name="page-size" [(ngModel)]="options.pageSize">-->
+<!--<option value="0">No pagination</option>-->
+<!--<option value="5">5</option>-->
+<!--<option value="10">10</option>-->
+<!--<option value="20">20</option>-->
+<!--</select>-->
+<!--</div>-->
+<!--</div>-->
+
+<!--<div class="form-group">-->
+<!--<clr-checkbox [(ngModel)]="options.server">Server-driven</clr-checkbox>-->
+<!--</div>-->
+
+<!--<div class="form-group" *ngIf="options.server">-->
+<!--<label for="latency">Latency</label>-->
+<!--<div class="select">-->
+<!--<select id="latency" name="latency" [(ngModel)]="options.latency">-->
+<!--<option value="0">0 ms</option>-->
+<!--<option value="100">100ms</option>-->
+<!--<option value="200">200ms</option>-->
+<!--<option value="500">500ms</option>-->
+<!--<option value="1000">1s</option>-->
+<!--<option value="2000">2s</option>-->
+<!--</select>-->
+<!--</div>-->
+<!--</div>-->
+
+<!--<button type="submit" class="btn btn-primary">Apply</button>-->
+<!--</form>-->
+
+
+<!--&lt;!&ndash; Modal: Delete &ndash;&gt;-->
+<!--<clr-modal [clrModalOpen]="showDeleteModal">-->
+<!--<h3 class="modal-title">Delete Item</h3>-->
+<!--<div class="modal-body">-->
+<!--<p>Delete the item <strong>id: {{deleteId}}</strong>. Are you sure?</p>-->
+<!--</div>-->
+<!--<div class="modal-footer">-->
+<!--<button type="button" class="btn btn-outline" (click)="showDeleteModal = false">Cancel</button>-->
+<!--<button type="button" class="btn btn-warning" (click)="itemDelete(deleteId)">Delete</button>-->
+<!--</div>-->
+<!--</clr-modal>-->
