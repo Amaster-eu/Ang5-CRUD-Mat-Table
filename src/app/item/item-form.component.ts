@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
 
+import { MatSnackBar } from '@angular/material';
+
 import { GithubModel } from '../models/github.model';
 import { GithubService } from '../services/github.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-item-add',
@@ -20,7 +23,8 @@ export class ItemFormComponent implements OnInit {
 
   constructor(private githubService: GithubService,
               private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              public snackBar: MatSnackBar) {
   }
 
   formControl = new FormControl('', [
@@ -48,7 +52,7 @@ export class ItemFormComponent implements OnInit {
       },
       (err) => {
         // TODO: add message
-        console.log('item-form.component.ts:48 editError', err);
+        console.log('item-form.component.ts:48 getError', err);
       }
     );
   }
@@ -68,34 +72,51 @@ export class ItemFormComponent implements OnInit {
     //
     // }
 
-    if (this.editStatus === false) {
+    if (!this.editStatus) {
       // Add Mode
-      this.githubService.addItem(this.item).subscribe(
-        (resp) => {
-          console.log('item-form.component.ts:51 addItem', resp);
-          this.item = new GithubModel({});
-        },
-        (err) => {
-          // TODO: add message
-          console.log('item-form.component.ts:56 addError', err);
-        }
-      );
+      if (!environment.useMockApi) {
+        // Server Real -- Localhost
+        this.githubService.addItem(this.item).subscribe(
+          (resp) => {
+            console.log('item-form.component.ts:51 addItem', resp);
+            this.item = new GithubModel({});
+          },
+          (err) => {
+            // TODO: add message
+            console.log('item-form.component.ts:56 addError', err);
+          }
+        );
+      } else {
+        // Server Fake -- GitHub API service
+        this.items.splice(1, 0, this.item);
+        this.snackBar.open('A new record was not added because it uses a fake server', 'Close', {
+          duration: 4000,
+        });
+      }
     } else {
       // Edit Mode
-      this.githubService.editItem(this.item).subscribe(
-        (resp) => {
-          console.log('item-form.component.ts 86: editItem', resp);
-        },
-        (err) => {
-          // TODO: add message
-          console.log('item-form.component.ts 90: editError', err);
-        }
-      );
+      if (!environment.useMockApi) {
+        // Server Real -- Localhost
+        this.githubService.editItem(this.item).subscribe(
+          (resp) => {
+            console.log('item-form.component.ts 86: editItem', resp);
+          },
+          (err) => {
+            // TODO: add message
+            console.log('item-form.component.ts 90: editError', err);
+          }
+        );
+      } else {
+        // Server Fake -- GitHub API service
+        this.snackBar.open('This record was not edited because it uses a fake server', 'Close', {
+          duration: 3000,
+        });
+      }
     }
     this.handleCancel();
   }
 
   handleCancel() {
-    this.router.navigate(['']);
+    this.router.navigate(['/']);
   }
 }

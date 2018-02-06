@@ -43,6 +43,6 @@ export class ItemViewComponent implements OnInit {
   }
 
   handleCancel() {
-    this.router.navigate(['']);
+    this.router.navigate(['/']);
   }
 }

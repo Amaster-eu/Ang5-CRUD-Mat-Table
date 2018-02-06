@@ -1,4 +1,4 @@
-export interface GithubModelFake {
+export interface GithubApi {
   items: GithubModel[];
   total_count: number;
 }

@@ -16,6 +16,7 @@ import {
   MatToolbarModule,
   MatProgressSpinnerModule,
   MatDatepickerModule,
+  MatSnackBarModule,
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -48,6 +49,7 @@ import { ItemModule } from './item/item.module';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
+    MatSnackBarModule,
     HttpClientModule,
     AppRoutingModule,
     HomeModule,

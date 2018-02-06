@@ -1,4 +1,4 @@
-<mat-grid-list cols="2" rowHeight="70px">
+<mat-grid-list cols="3" rowHeight="70px">
   <mat-grid-tile>
     <!-- Filter 1 -->
     <div class="form">
@@ -20,11 +20,18 @@
       </mat-form-field>
     </div>
   </mat-grid-tile>
+  <mat-grid-tile>
+    <!-- Actions -->
+    <button mat-raised-button (click)="refresh()">
+      <mat-icon>autorenew</mat-icon>
+      Refresh Table
+    </button>
+  </mat-grid-tile>
 </mat-grid-list>
 
 <!-- PreLoader -->
-<div class="loading-shade" *ngIf="isLoading">
-  <mat-spinner></mat-spinner>
+<div class="loading-shade" *ngIf="isLoading || isRateLimit">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
   <div class="rate-limit-reached" *ngIf="isRateLimit">
     GitHub's API rate limit has been reached. It will be reset in one minute.
   </div>
@@ -53,11 +60,6 @@
     <mat-header-cell *matHeaderCellDef mat-sort-header>Url</mat-header-cell>
     <mat-cell *matCellDef="let item"><a href="{{item?.html_url}}" target="_blank">{{item?.html_url}}</a></mat-cell>
   </ng-container>
-  <!-- Created -->
-  <!--<ng-container matColumnDef="created_at">-->
-    <!--<mat-header-cell *matHeaderCellDef mat-sort-header>Created at</mat-header-cell>-->
-    <!--<mat-cell *matCellDef="let item">{{item?.created_at | date}}</mat-cell>-->
-  <!--</ng-container>-->
   <!-- State -->
   <ng-container matColumnDef="language">
     <mat-header-cell *matHeaderCellDef mat-sort-header>Language</mat-header-cell>
@@ -71,7 +73,7 @@
         <mat-icon aria-label="Add">add_circle_outline</mat-icon>
       </button>
     </mat-header-cell>
-    <mat-cell *matCellDef="let item; let i=index;">
+    <mat-cell *matCellDef="let item;">
       <!-- View -->
       <button mat-icon-button (click)="handleView(item?.id)">
         <mat-icon aria-label="View">visibility</mat-icon>
@@ -101,40 +103,36 @@
 <!-- Modal: Delete -->
 <ng-template let-data let-dialogRef="dialog-delete-item">
   <!--<div class="container" [mat-dialog-open]="showDeleteModal">-->
-    <h3 mat-dialog-title>Delete Item</h3>
+  <h3 mat-dialog-title>Delete Item</h3>
 
-    <div mat-dialog-content>
-      <p>Delete the item with <strong>id: {{deleteId}}</strong>.</p>
-      <h3>Are you sure?</h3>
-    </div>
+  <div mat-dialog-content>
+    <p>Delete the item with <strong>id: {{deleteId}}</strong>.</p>
+    <h3>Are you sure?</h3>
+  </div>
 
-    <div mat-dialog-actions>
-      <button mat-raised-button color="primary"
-              [mat-dialog-close]="1"
-              (click)="deleteItem(deleteId)">
-        Delete
-      </button>
-      <button mat-raised-button mat-dialog-close>Cancel</button>
-    </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button color="primary"
+            [mat-dialog-close]="1"
+            (click)="deleteItem(deleteId)">
+      Delete
+    </button>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
+  </div>
   <!--</div> -->
   <!--<button type="button" (click)="dialogRef.close(lastCloseResult = howMuch.value)">Close dialog</button>-->
   <!--<button (click)="dialogRef.updateSize('500px', '500px').updatePosition({ top: '25px', left: '25px' });">Change dimensions</button>`-->
 </ng-template>
 
 <!--<clr-modal [clrModalOpen]="showDeleteModal">-->
-  <!--<h3 class="modal-title">Delete Item</h3>-->
-  <!--<div class="modal-body">-->
-    <!--<p>Delete the item <strong>id: {{deleteId}}</strong>. Are you sure?</p>-->
-  <!--</div>-->
-  <!--<div class="modal-footer">-->
-    <!--<button type="button" class="btn btn-outline" (click)="showDeleteModal = false">Cancel</button>-->
-    <!--<button type="button" class="btn btn-warning" (click)="itemDelete(deleteId)">Delete</button>-->
-  <!--</div>-->
+<!--<h3 class="modal-title">Delete Item</h3>-->
+<!--<div class="modal-body">-->
+<!--<p>Delete the item <strong>id: {{deleteId}}</strong>. Are you sure?</p>-->
+<!--</div>-->
+<!--<div class="modal-footer">-->
+<!--<button type="button" class="btn btn-outline" (click)="showDeleteModal = false">Cancel</button>-->
+<!--<button type="button" class="btn btn-warning" (click)="itemDelete(deleteId)">Delete</button>-->
+<!--</div>-->
 <!--</clr-modal>-->
-
-
-
-
 
 
 <!--<div class="button-row">-->

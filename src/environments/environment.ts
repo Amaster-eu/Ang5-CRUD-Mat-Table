@@ -4,5 +4,9 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  // useMockApi: true -- fake REST server GitHub API service
+  // or
+  // useMockApi: false -- json-server with localhost DB: ./src/assets/db/github.json
+  useMockApi: false
 };

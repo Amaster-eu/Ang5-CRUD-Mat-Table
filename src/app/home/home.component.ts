@@ -16,6 +16,7 @@ import {
 
 import { GithubService } from '../services/github.service';
 import { DialogDeleteComponent } from './dialog.delete.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   styleUrls: ['./home.component.scss'],
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   displayedColumns = ['id', 'name', 'description', 'html_url', 'language', 'actions'];
   dataSource = new MatTableDataSource();
   data: Object;
+  dataFilter = '';
   // State Mat-Table
   isLoading = true;
   isRateLimit = false;
@@ -36,9 +38,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   selectedValue = '';
   selects = [
     {viewValue: 'None'},
-    {value: 'html', viewValue: 'HTML'},
-    {value: 'javascript', viewValue: 'JavaScript'},
-    {value: 'css', viewValue: 'CSS'}
+    {value: 'HTML', viewValue: 'HTML'},
+    {value: 'JavaScript', viewValue: 'JavaScript'},
+    {value: 'CSS', viewValue: 'CSS'}
   ];
 
   applyFilter(filterValue: string) {
@@ -56,6 +58,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   filter() {
+    this.dataFilter = this.selectedValue;
     this.getData();
   }
 
@@ -78,42 +81,66 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   getData() {
     // TODO: Get Items
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-          return this.githubService.getItems(
-            this.selectedValue,
-            this.sort.active,
-            this.sort.direction,
-            this.paginator.pageIndex,
-            this.paginator.pageSize
-          );
-        }),
-        map(resp => {
-          // Pagination Client-Side: Table
-          this.dataSource.paginator = this.paginator;
-
-          // Pagination Server-Side
-          // this.resultsLength = resp.total_count;
-
-          // Flip flag to show that loading has finished.
-          this.isLoading = false;
-          this.isRateLimit = false;
-          // console.log('home.component.ts 41:loadData', resp);
-          return resp;
-        }),
-        catchError(() => {
-          this.isLoading = false;
-          // Catch if the GitHub API has reached its rate limit. Return empty data.
-          this.isRateLimit = true;
-          return observableOf([]);
-        })
-        // For Real Server
-      ).subscribe(resp => this.dataSource.data = resp);
-    // For Fake Server
-    // ).subscribe(resp => this.dataSource.data = resp.items);
+    if (environment.useMockApi) {
+      // Server Fake -- GitHub API service
+      merge(this.sort.sortChange, this.paginator.page)
+        .pipe(
+          startWith({}),
+          switchMap(() => {
+            this.isLoading = true;
+            return this.githubService.getItems(
+              this.dataFilter,
+              this.sort.active,
+              this.sort.direction,
+              this.paginator.pageIndex,
+              this.paginator.pageSize
+            );
+          }),
+          map(resp => {
+            // Pagination Server-Side
+            this.resultsLength = resp.total_count;
+            // Flip flag to show that loading has finished.
+            this.isLoading = false;
+            this.isRateLimit = false;
+            return resp.items;
+          }),
+          catchError(() => {
+            this.isLoading = false;
+            // Catch if the GitHub API has reached its rate limit. Return empty data.
+            this.isRateLimit = true;
+            return observableOf([]);
+          })
+        ).subscribe(resp => this.dataSource.data = resp);
+    } else {
+      // Server Real -- Localhost
+      merge(this.sort.sortChange, this.paginator.page)
+        .pipe(
+          startWith({}),
+          switchMap(() => {
+            this.isLoading = true;
+            return this.githubService.getItems(
+              this.dataFilter,
+              this.sort.active,
+              this.sort.direction,
+              this.paginator.pageIndex,
+              this.paginator.pageSize);
+          }),
+          map(resp => {
+            // Pagination Client-Side: Table
+            this.dataSource.paginator = this.paginator;
+            // Flip flag to show that loading has finished.
+            this.isLoading = false;
+            this.isRateLimit = false;
+            return resp;
+          }),
+          catchError(() => {
+            this.isLoading = false;
+            // Catch if the GitHub API has reached its rate limit. Return empty data.
+            this.isRateLimit = true;
+            return observableOf([]);
+          })
+        ).subscribe(resp => this.dataSource.data = resp);
+    }
   }
 
   handleView(id: number) {
@@ -124,8 +151,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   handleAdd() {
     this.router.navigate(['/add']);
-    // Move to last pagination page
-    this.githubService.paginate = Math.ceil(this.paginator.length / this.paginator.pageSize); // calls the setter
+    if (!environment.useMockApi) {
+      // Move to last pagination page
+      this.githubService.paginate = Math.ceil(this.paginator.length / this.paginator.pageSize); // calls the setter
+    }
   }
 
   handleEdit(id: number) {
@@ -141,5 +170,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
     // Move to current pagination page
     this.githubService.paginate = this.paginator.pageIndex; // calls the setter
+  }
+
+  refresh() {
+    this.applyFilter('');
+    this.selectedValue = '';
+    this.dataFilter = '';
+    this.ngAfterViewInit();
   }
 }

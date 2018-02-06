@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component} from '@angular/core';
 
 @Component({
   selector: 'app-toolbar',
@@ -8,11 +8,4 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 export class ToolbarComponent {
   title = 'Angular 5 CRUD Mat-Table Http';
-
-  @Output()
-  onRefreshClick = new EventEmitter();
-
-  refresh() {
-    this.onRefreshClick.emit();
-  }
 }

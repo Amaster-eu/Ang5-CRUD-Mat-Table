@@ -16,6 +16,7 @@ import {
   MatProgressSpinnerModule,
   MatSelectModule,
   MatGridListModule,
+  MatSnackBarModule,
 } from '@angular/material';
 
 import { HomeComponent } from './home.component';
@@ -46,6 +47,7 @@ import { DialogDeleteComponent } from './dialog.delete.component';
     MatProgressSpinnerModule,
     MatSelectModule,
     MatGridListModule,
+    MatSnackBarModule,
   ]
 })
 export class HomeModule {
